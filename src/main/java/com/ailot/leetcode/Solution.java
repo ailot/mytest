@@ -5,7 +5,7 @@ import java.util.*;
 public class Solution {
 
     public static void main(String[] args) {
-        System.out.println(isPalindrome(121));
+        System.out.println(lengthOfLongestSubstring2("au"));
     }
 
     public static int[] twoSum(int[] nums, int target) {
@@ -116,5 +116,47 @@ public class Solution {
             x /= 10;
         }
         return x == revertedNumber || x == revertedNumber / 10;
+    }
+
+    public static int lengthOfLongestSubstring2(String s) {
+        int n = s.length();
+        int ans = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = i + 1; j <= n; j++) {
+                if (allUnique(s, i, j)) {
+                    ans = Math.max(ans, j - i);
+                }
+            }
+        }
+        return ans;
+    }
+
+    public static boolean allUnique(String s, int start, int end) {
+        Set<Character> set = new HashSet<>();
+        for (int i = start; i < end; i++) {
+            Character ch = s.charAt(i);
+            if (set.contains(ch)) {
+                return false;
+            } else {
+                set.add(ch);
+            }
+        }
+        return true;
+    }
+
+
+    public static int lengthOfLongestSubstring3(String s) {
+        int n = s.length();
+        Set<Character> set = new HashSet<>();
+        int ans = 0, i = 0, j = 0;
+        while (i < n && j < n) {
+            if (!set.contains(s.charAt(j))){
+                set.add(s.charAt(j++));
+                ans = Math.max(ans,j-i);
+            }else {
+                set.remove(i++);
+            }
+        }
+        return ans;
     }
 }
