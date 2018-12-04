@@ -4,10 +4,6 @@ import java.util.*;
 
 public class Solution {
 
-    public static void main(String[] args) {
-        System.out.println(lengthOfLongestSubstring2("au"));
-    }
-
     public static int[] twoSum(int[] nums, int target) {
         Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
@@ -144,19 +140,71 @@ public class Solution {
         return true;
     }
 
+    public static int[] twoSum2(int[] nums, int target) {
+        return null;
+    }
 
-    public static int lengthOfLongestSubstring3(String s) {
-        int n = s.length();
-        Set<Character> set = new HashSet<>();
-        int ans = 0, i = 0, j = 0;
-        while (i < n && j < n) {
-            if (!set.contains(s.charAt(j))){
-                set.add(s.charAt(j++));
-                ans = Math.max(ans,j-i);
-            }else {
-                set.remove(i++);
+    public static String longestCommonPrefix(String[] strs) {
+        if (strs == null || strs.length == 0) return "";
+        String first = strs[0];
+        int n = first.length();
+        String temp = "";
+        String str = "";
+        for (int j = 0; j < n; j++) {
+            int count = 0;
+            temp += String.valueOf(first.charAt(j));
+            for (int i = 1; i < strs.length; i++) {
+                int index = strs[i].indexOf(temp);
+                if (index == 0) {
+                    count++;
+                }
+            }
+            if (count == strs.length - 1) {
+                str = temp;
+                continue;
+            } else {
+                break;
             }
         }
-        return ans;
+        return str;
+    }
+
+
+    public static boolean checkInclusion(String s1, String s2) {
+        int n1 = s1.length();
+        int n2 = s2.length();
+        if (n1 > n2) return false;
+        int count = 0,sum1=0,sum2=0;
+        for (int i=0;i<n1;i++){
+            sum1 +=s1.charAt(i);
+        }
+        for (int i = 0; i < n2; i++) {
+            int j = i;
+            sum2 = 0;
+            count = 0;
+            Set<Character> set = new HashSet<>();
+            while (j - i < n1 && j < n2) {
+                    sum2 +=s2.charAt(j);
+                    set.add(s2.charAt(j));
+                    count++;
+                    if (count == n1 && sum1 == sum2) {
+                        for (int a=0;a<n1;a++){
+                            if (!set.contains(s1.charAt(a))){
+                                continue;
+                            }else {
+                                return true;
+                            }
+                        }
+                    }
+                    j++;
+                }
+            }
+            return false;
+        }
+
+    public static void main(String[] args) {
+
+        System.out.println(checkInclusion("abc","ccccbbbbaaaa"));
+
     }
 }
