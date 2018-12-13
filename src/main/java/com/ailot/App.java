@@ -1,10 +1,9 @@
 package com.ailot;
 
-import com.google.common.base.Splitter;
+import org.joda.time.LocalDate;
 
 import java.text.ParseException;
-
-import java.util.Map;
+import java.util.Date;
 
 /**
  * Hello world!
@@ -35,9 +34,13 @@ public class App {
             System.out.println(today.compareTo(date2));
         }*/
 
-       String str = "UO314:PB20;JQ442:BG20;IT450:BG20;TZ357:BG20;XW407:BX20;AK480:PBAB,PBPB";
+       /*String str = "UO314:PB20;JQ442:BG20;IT450:BG20;TZ357:BG20;XW407:BX20;AK480:PBAB,PBPB";
         Map<String, String> baggageClassCodeMap = Splitter.on(";").trimResults().withKeyValueSeparator(":").split(str);
-        System.out.println(baggageClassCodeMap);
+        System.out.println(baggageClassCodeMap);*/
+
+        Date date = new LocalDate().plusDays(2).toDate();
+        System.out.println(new Date().before(date));
+        System.out.println();
 
     }
 }
