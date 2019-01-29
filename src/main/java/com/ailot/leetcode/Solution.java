@@ -171,40 +171,38 @@ public class Solution {
 
 
     public static boolean checkInclusion(String s1, String s2) {
-        int n1 = s1.length();
-        int n2 = s2.length();
-        if (n1 > n2) return false;
-        int count = 0,sum1=0,sum2=0;
-        for (int i=0;i<n1;i++){
-            sum1 +=s1.charAt(i);
-        }
-        for (int i = 0; i < n2; i++) {
-            int j = i;
-            sum2 = 0;
-            count = 0;
-            Set<Character> set = new HashSet<>();
-            while (j - i < n1 && j < n2) {
-                    sum2 +=s2.charAt(j);
-                    set.add(s2.charAt(j));
-                    count++;
-                    if (count == n1 && sum1 == sum2) {
-                        for (int a=0;a<n1;a++){
-                            if (!set.contains(s1.charAt(a))){
-                                continue;
-                            }else {
-                                return true;
-                            }
-                        }
-                    }
+        {
+            int s1l, s2l;
+            if ((s2l = s2.length()) < (s1l = s1.length()))
+                return false;
+            long s1v = 0;
+            long s2v = 0;
+            for (int i = 0; i < s1l; i++)
+            {
+                s1v += 1 << (s1.charAt(i) - 'a');
+                s2v += 1 << (s2.charAt(i) - 'a');
+            }
+            int i = 0, j = s1l - 1;
+            while (j < s2l)
+            {
+                if (s2v == s1v)
+                    return true;
+                else
+                {
+                    s2v -= 1 << (s2.charAt(i) - 'a');
+                    i++;
                     j++;
+                    if (j < s2l)
+                        s2v += 1 << (s2.charAt(j) - 'a');
                 }
             }
             return false;
         }
+    }
+
 
     public static void main(String[] args) {
-
-        System.out.println(checkInclusion("abc","ccccbbbbaaaa"));
+        System.out.println(checkInclusion("abc", "bbbca"));
 
     }
 }
