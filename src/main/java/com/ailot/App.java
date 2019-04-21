@@ -92,6 +92,27 @@ public class App {
        });
        flightList.forEach(System.out::println);
 
+
+//        Map<String,Integer> map=new HashMap<>();
+//        map.put("A", 1000);
+//        map.put("B", 2000);
+//        map.put("C", 3000);
+//
+//        // add new key value ("A",99), if key "A" exist in map then do function  "(X,Y) -> (Y+X)" ,the function return value will replace the oldvalue.
+//        Integer newValue1 = map.merge("A", 99, (X,Y) -> (Y+X));
+//        Integer newValue2 = map.merge("A", 888, (X,Y) -> Y);
+//        // add new key value ("D",666), if key "D" not exist in map then insert the key value to map
+//        Integer newValue3 = map.merge("D", 666, (X,Y) -> Y);
+//        Integer newValue4 = map.merge(null, 777, (X,Y) -> Y);
+//        Integer newValue5 = map.merge(null, 5555, (X,Y) -> Y);
+//        System.out.println(newValue1);
+//        System.out.println(newValue2);
+//
+//        Float a = 0.47F;
+//        Float b = 0F;
+//
+//        System.out.println(a.compareTo(b));
+
        }
 
     static class Flight{
