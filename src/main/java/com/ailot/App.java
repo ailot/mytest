@@ -2,20 +2,18 @@ package com.ailot;
 
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
+import com.google.gson.Gson;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.LocalDate;
 
-import java.sql.SQLOutput;
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-
-import static java.util.regex.Pattern.compile;
 
 /**
  * Hello world!
@@ -58,7 +56,7 @@ public class App {
 
         Date date = new LocalDate().plusDays(2).toDate();
         System.out.println(new Date().before(date));*/
-       /* System.out.println(Arrays.toString(flight.split("\\|")));*/
+        /* System.out.println(Arrays.toString(flight.split("\\|")));*/
         /*String code = "EU2206";
         System.out.println(StringUtils.substring(code,0,2));*/
        /* Map<String, String> customTimeMap = Splitter.on(";").omitEmptyStrings().trimResults().withKeyValueSeparator(":").split(null);
@@ -66,35 +64,65 @@ public class App {
        /*String phone = "12356478";
        System.out.println(matchPhone(phone));*/
 
-       List<Flight> flights = Lists.newArrayList();
-       flights.add(new Flight(100,"9C201","Y"));
-       flights.add(new Flight(101,"9C201","C"));
-       flights.add(new Flight(102,"9C201","F"));
-       flights.add(new Flight(103,"9C201","S"));
-       flights.add(new Flight(100,"9C201","Y"));
-       flights.add(new Flight(100,"9C201","Y"));
-       flights.add(new Flight(100,"9C201","Y"));
-       flights.add(new Flight(100,"9C201","Y"));
-       flights.forEach(item-> System.out.println(item.toString()));
+        List<Flight> flights = Lists.newArrayList();
+        flights.add(new Flight(100, "9C201", "Y"));
+        flights.add(new Flight(101, "9C201", "C"));
+        flights.add(new Flight(102, "9C201", "F"));
+        flights.add(new Flight(103, "9C201", "S"));
+        flights.add(new Flight(104, "9C201", "Y"));
+        flights.add(new Flight(105, "9C201", "Y"));
+        flights.add(new Flight(106, "9C201", "Y"));
+        flights.add(new Flight(107, "9C201", "Y"));
+        //flights.forEach(item -> System.out.println(item.toString()));
 
-       Map<String,Flight> flights1 = flights.stream().filter(item -> item.getNo()=="9C201").collect(Collectors.toMap(Flight::getCabinCode,Function.identity(), (item1,item2) -> item2));
-        System.out.println("----------------------------------");
-       flights1.forEach((key,value)-> System.out.println(key+":"+value.toString()));
+//        List list = flights.stream().filter(item -> item.getPrice()==100).collect(Collectors.toList());
+//        list.forEach(System.out::println);
+//        String air = "DD,dd,SL";
+//        System.out.println(air.indexOf("dd".toUpperCase()));
+//        Map<String, Flight> flights1 = flights.stream().filter(item -> item.getNo() == "9C201").collect(Collectors.toMap(Flight::getCabinCode, Function.identity(), (item1, item2) -> item2));
+//        System.out.println("----------------------------------");
+//        flights1.forEach((key, value) -> System.out.println(key + ":" + value.toString()));
+//
+//        Map<Integer, Flight> flightMap = flights.stream().collect(Collectors.toMap(Flight::getPrice, a -> a, (k1, k2) -> k1));
+//        flightMap.forEach((key, value) -> System.out.println(key + ":" + value.toString()));
+//        System.out.println("----------------------------------------------");
+//        List<Flight> flightList = Lists.newArrayList();
+//        flights.stream().forEach(item -> {
+//            if (!flightList.contains(item)) {
+//                flightList.add(item);
+//            }
+//        });
+//        flightList.forEach(System.out::println);
 
-       Map<Integer,Flight> flightMap = flights.stream().collect(Collectors.toMap(Flight::getPrice, a -> a,(k1,k2)->k1));
-       flightMap.forEach((key,value) -> System.out.println(key+":"+value.toString()));
-       System.out.println("----------------------------------------------");
-       List<Flight> flightList = Lists.newArrayList();
-       flights.stream().forEach(item -> {
-           if (!flightList.contains(item)){
-               flightList.add(item);
-           }
-       });
-       flightList.forEach(System.out::println);
+//        String codes = "9C14460025:AIRSALESWS-EXCEP-110;AQ49103552:FS_ERR_006|FS_ERR_005;G576345251:OPEN;CA76344875:XXX;EU76345273:XXX;";
+//        String strs = "TB05:100,110;TB10:200,360;TB15:375,610;TB20:550,885;TB25:725,;";
+//        String error = String.join("|", Arrays.stream(codes.split(";")).collect(Collectors.groupingBy(codesStr ->
+//                codesStr.split(":")[0])).get("AQ49103552").stream().map(str -> str.split(":")[1]).collect(Collectors.toList()));
+//        Map<String,String> errors = Splitter.on(";").omitEmptyStrings().trimResults().withKeyValueSeparator(":").split(strs);
+//        System.out.println(new Gson().toJson(errors));
 
-       }
+//        List<String> stopList = Lists.newArrayList();
+//        String preStop = "HKG,CTU";
+//        if (StringUtils.isNotBlank(preStop)){
+//            stopList.addAll(Arrays.asList(preStop.split(",")));
+//        }
+//        String postStop = "CAN,";
+//        if (StringUtils.isNotBlank(postStop)){
+//            stopList.addAll(Arrays.asList(postStop.split(",")));
+//        }
+//        System.out.println(String.join(",",stopList));
+//        stopList.forEach(System.out::println);
+//        String s = "1234567";
+//        StringBuffer sb = new StringBuffer();
+//        char[] c = s.toCharArray();
+//        for (char c1 : c) {
+//            sb.append(String.valueOf(c1)).append(",");
+//        }
+//        System.out.println(sb.substring(0,sb.length()-1));
+        System.out.println(9/7);
+    }
 
-    static class Flight{
+    static class Flight {
 
         int price;
 
