@@ -1,19 +1,9 @@
 package com.ailot;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 
 import java.text.ParseException;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * Hello world!
@@ -63,6 +53,27 @@ public class App {
         System.out.println(customTimeMap);*/
        /*String phone = "12356478";
        System.out.println(matchPhone(phone));*/
+
+        //        Map<String,Integer> map=new HashMap<>();
+//        map.put("A", 1000);
+//        map.put("B", 2000);
+//        map.put("C", 3000);
+//
+//        // add new key value ("A",99), if key "A" exist in map then do function  "(X,Y) -> (Y+X)" ,the function return value will replace the oldvalue.
+//        Integer newValue1 = map.merge("A", 99, (X,Y) -> (Y+X));
+//        Integer newValue2 = map.merge("A", 888, (X,Y) -> Y);
+//        // add new key value ("D",666), if key "D" not exist in map then insert the key value to map
+//        Integer newValue3 = map.merge("D", 666, (X,Y) -> Y);
+//        Integer newValue4 = map.merge(null, 777, (X,Y) -> Y);
+//        Integer newValue5 = map.merge(null, 5555, (X,Y) -> Y);
+//        System.out.println(newValue1);
+//        System.out.println(newValue2);
+//
+//        Float a = 0.47F;
+//        Float b = 0F;
+//
+//        System.out.println(a.compareTo(b));
+
 
         List<Flight> flights = Lists.newArrayList();
         flights.add(new Flight(100, "9C201", "Y"));
@@ -119,7 +130,7 @@ public class App {
 //            sb.append(String.valueOf(c1)).append(",");
 //        }
 //        System.out.println(sb.substring(0,sb.length()-1));
-        System.out.println(9/7);
+        System.out.println(9 / 7);
     }
 
     static class Flight {
