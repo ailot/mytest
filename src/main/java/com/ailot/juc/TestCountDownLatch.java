@@ -12,21 +12,18 @@ public class TestCountDownLatch {
 
         ExecutorService executorService = new ThreadPoolExecutor(threadCount, threadCount, 0L, TimeUnit.MICROSECONDS, new LinkedBlockingDeque<Runnable>());
         for (int i = 0; i < threadCount; i++) {
-            executorService.execute(new Runnable() {
-                @Override
-                public void run() {
-                    String name = Thread.currentThread().getName();
-                    System.out.println("服务" + name + "开始启动");
-                    try {
-                        int time = (int) (10000 + Math.random() * 50000);
-                        System.out.println(name + "休眠：" + time);
-                        Thread.sleep(time);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    System.out.println("服务" + name + "启动完成");
-                    countDownLatch.countDown();
+            executorService.execute(() -> {
+                String name = Thread.currentThread().getName();
+                System.out.println("服务" + name + "开始启动");
+                try {
+                    int time = (int) (10000 + Math.random() * 50000);
+                    System.out.println(name + "休眠：" + time);
+                    Thread.sleep(time);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
+                System.out.println("服务" + name + "启动完成");
+                countDownLatch.countDown();
             });
         }
 
