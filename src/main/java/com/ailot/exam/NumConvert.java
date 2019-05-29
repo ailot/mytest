@@ -71,7 +71,7 @@ public class NumConvert {
             }
         }
 
-        Pattern pattern1 = Pattern.compile("(.)\\1+");
+        Pattern pattern1 = Pattern.compile(REPEAT_FOUR_NUM);
         Matcher matcher1 = pattern1.matcher(str);
         while (matcher1.find()){
             System.out.println(123);
@@ -173,7 +173,7 @@ public class NumConvert {
     }
 
     public static void main(String[] args) {
-        checkRoman("CCCCIC");
+        checkRoman("CCCCIX");
         /*String pathname = "input.txt";
         URL resource = NumConvert.class.getResource(pathname);
         try {
