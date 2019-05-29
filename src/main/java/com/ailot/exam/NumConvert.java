@@ -1,10 +1,9 @@
-/*
- * LY.com Inc.
- * Copyright (c) 2004-2019 All Rights Reserved.
- */
-
 package com.ailot.exam;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.math.BigDecimal;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -21,24 +20,26 @@ public class NumConvert {
 
     //罗马数字集合
     private static final String ROMAN_NUM = "IVXLCDM";
-    //可重复三次的字符
-    private static final String REPEATED_THREE = "IXCM";
     //不能重复的字符串
     private static final String NEVER_REPEATED = "DLV";
     //重复4次
-    private static final String REPEAT_FOUR_NUM = "(\\w)\\1{3,}";
+    private static final Pattern REPEAT_FOUR_NUM = Pattern.compile("(\\w)\\1{3,}");
+
     //重复两次以上
-    private static final String REPEAT_TWO_NUM = "(\\w)\\1{2,}";
+    private static final Pattern REPEAT_TWO_NUM = Pattern.compile("(\\w)\\1+");
     //解析罗马字符别名
-    private static final String ALIAS_REGEX = "([a-zA-Z]+)\\s+is\\s+([IVXLCDM]+)\\s*";
+    private static final Pattern ALIAS_REGEX = Pattern.compile("([a-zA-Z]+)\\s+is\\s+([IVXLCDM]+)\\s*");
 
     private static Map<String, String> aliasMap = new HashMap<>();
+
+    private static Map<String, BigDecimal> priceMap = new HashMap<>();
+
     //解析价格
-    private static final String CREDIT_REGEX = "((.*)\\s)+is\\s+([0-9]+)\\s+Credits\\s*";
+    private static final Pattern CREDIT_REGEX = Pattern.compile("(.*)\\s+([^\\s]+)\\s+?is\\s+([0-9]+)\\s+Credits\\s*");
     //解析how many
-    private static final String HOW_MANY_REGEX = "how\\s+many\\s+Credits\\s+is\\s+(.*)\\?$";
+    private static final Pattern HOW_MANY_REGEX = Pattern.compile("how\\s+many\\sCredits\\s+is\\s+(.*)\\s+([^\\s]+?)\\s*\\?\\s*");
     //解析how much
-    private static final String HOW_MUCH_REGEX = "how\\s+much\\s+is\\s+(.*)\\s*\\?$";
+    private static final Pattern HOW_MUCH_REGEX = Pattern.compile("how\\s+much\\s+is\\s+(.*?)\\s*\\?\\s*");
 
     static {
         romanMap.put("I", 1);
@@ -70,24 +71,21 @@ public class NumConvert {
                 return false;
             }
         }
-
-        Pattern pattern1 = Pattern.compile(REPEAT_FOUR_NUM);
-        Matcher matcher1 = pattern1.matcher(str);
-        while (matcher1.find()){
-            System.out.println(123);
-        }
-
-        if (str.matches(REPEAT_FOUR_NUM)) {
-            System.out.println("存在重复出现四次的字符串");
+        //判断IXCM是否重复超过三次
+        Matcher matcherFour = REPEAT_FOUR_NUM.matcher(str);
+        while (matcherFour.find()) {
+            System.out.println(matcherFour.group(1) + "重复出现四次");
             return false;
         }
-        Pattern pattern = Pattern.compile(REPEAT_TWO_NUM);
-        Matcher matcher = pattern.matcher(str);
-        matcher.find();
-        if (matcher.matches() && NEVER_REPEATED.contains(matcher.group(1))) {
-            System.out.println(matcher.group(1) + "不允许重复出现");
-        }
 
+        //判断DLV是否重复
+        Matcher matcherTwo = REPEAT_TWO_NUM.matcher(str);
+        while (matcherTwo.find()) {
+            if (NEVER_REPEATED.contains(matcherTwo.group(1))) {
+                System.out.println(matcherTwo.group(1) + "不允许重复出现");
+                return false;
+            }
+        }
         return true;
 
     }
@@ -95,42 +93,97 @@ public class NumConvert {
     /**
      * 解析赋值
      */
-    private static String aliasMethod(String word) {
+    private static boolean aliasMethod(String word) {
 
-        Pattern pattern = Pattern.compile(ALIAS_REGEX);
-        Matcher matcher = pattern.matcher(word);
-        matcher.find();
-        aliasMap.put(matcher.group(1), matcher.group(2));
-        return "";
+        Matcher matcher = ALIAS_REGEX.matcher(word);
+        if (matcher.find()) {
+            aliasMap.put(matcher.group(1), matcher.group(2));
+            return true;
+        }
+        return false;
     }
 
     /**
      * 解析价格
+     *
      * @param word
      * @return
      */
-    /*public static String creditMethod(String word) {
-        try {
-            Pattern pattern = Pattern.compile(CREDIT_REGEX);
-            Matcher matcher = pattern.matcher(word);
-            matcher.find();
-            String left = matcher.group(1);
-            String romanLeft = alias2Roman(left);
+    public static boolean creditMethod(String word) {
 
+        Matcher matcherCredit = CREDIT_REGEX.matcher(word);
+        if (matcherCredit.find()) {
+            String left = matcherCredit.group(1);
+            String romanLeft = alias2Roman(left);
             // 检验是否罗马文
             boolean checkRoman = checkRoman(romanLeft);
             if (checkRoman) {
                 int num = roman2Int(romanLeft);
-                String priceAlias = matcher.group(2);
-                String total = matcher.group(3);
-                priceMap.put(priceAlias, new BigDecimal(Integer.parseInt(total)).divide(new BigDecimal(num)).setScale(2,
-                        RoundingMode.HALF_UP));
+                String priceAlias = matcherCredit.group(2);
+                String total = matcherCredit.group(3);
+                //计算单价并存入map
+                priceMap.put(priceAlias, new BigDecimal(Float.valueOf(total) / num).setScale(2, BigDecimal.ROUND_UP));
+                return true;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return "";
-    }*/
+        return false;
+    }
+
+    /**
+     * how many解析
+     *
+     * @param word
+     * @return
+     */
+    public static boolean howManyMethod(String word) {
+
+        Matcher matcher = HOW_MANY_REGEX.matcher(word);
+        if (matcher.find()) {
+            String left = matcher.group(1);
+            String right = matcher.group(2);
+            String romanLeft = alias2Roman(left);
+            // 检验是否罗马文
+            boolean checkRoman = checkRoman(romanLeft);
+            if (checkRoman) {
+                int num = roman2Int(romanLeft);
+                BigDecimal priceVal = priceMap.get(right);
+                if (priceVal != null) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append(left).append(" ").append(right).append(" ").append("is ")
+                            .append(new BigDecimal(num).multiply(priceVal).setScale(0).toString()).append(" Credits");
+                    System.out.println(sb.toString());
+                    return true;
+                } else {
+                    System.out.println("I have no idea what you are talking about");
+                }
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * 解析how much
+     */
+    public static boolean howMuchMethod(String word) {
+        Matcher matcher = HOW_MUCH_REGEX.matcher(word);
+        if (matcher.find()) {
+            String left = matcher.group(1);
+            String romanLeft = alias2Roman(left);
+            // 检验是否罗马文
+            int num;
+            boolean checkRoman = checkRoman(romanLeft);
+            if (checkRoman && (num = roman2Int(romanLeft)) != 0) {
+                System.out.println(left + " is " + num);
+                return true;
+            }
+        } else {
+            System.out.println("I have no idea what you are talking about");
+        }
+
+        return false;
+    }
+
 
     /**
      * 别名转罗马数字
@@ -140,7 +193,8 @@ public class NumConvert {
         StringBuilder stringBuilder = new StringBuilder();
         for (String str : words) {
             String aliasVal = aliasMap.get(str);
-            stringBuilder.append(isBank(aliasVal) ? "" : aliasVal);
+            stringBuilder.append(isBank(aliasVal) ? str : aliasVal);
+
         }
         return stringBuilder.toString();
     }
@@ -153,15 +207,30 @@ public class NumConvert {
             return 0;
         }
         char[] words = word.toCharArray();
-        //获取最高位的值
-        int lastVal = romanMap.get(String.valueOf(words[0]));
-        for (int i = 1; i < words.length; i++) {
-            int val = romanMap.get(String.valueOf(words[i]));
-            if (val == lastVal) {
-                lastVal += val;
+        //每两位判断一次取值
+        int len = words.length;
+        int total = 0;
+        for (int i = 0; i < len; i += 2) {
+            StringBuilder sb = new StringBuilder();
+            int one = 0;
+            int two = 0;
+            if (i < len) {
+                one = romanMap.get(String.valueOf(words[i]));
+                sb.append(String.valueOf(words[i]));
             }
+            if (i + 1 < len) {
+                two = romanMap.get(String.valueOf(words[i + 1]));
+                sb.append(String.valueOf(words[i + 1]));
+            }
+            String rom = sb.toString();
+            Integer num = romanMap.get(rom);
+            //不存在则相加
+            if (num == null) {
+                num = one + two;
+            }
+            total += num;
         }
-        return lastVal;
+        return total;
     }
 
     //判断字符串是否为空
@@ -173,8 +242,7 @@ public class NumConvert {
     }
 
     public static void main(String[] args) {
-        checkRoman("CCCCIX");
-        /*String pathname = "input.txt";
+        String pathname = "input.txt";
         URL resource = NumConvert.class.getResource(pathname);
         try {
             FileReader reader = new FileReader(resource.getPath());
@@ -182,10 +250,23 @@ public class NumConvert {
             String line;
             while ((line = br.readLine()) != null) {
                 // 一次读入一行数据
-                System.out.println(line);
+                //System.out.println(line);
+                if (aliasMethod(line)) {
+                    continue;
+                }
+                if (creditMethod(line)) {
+                    continue;
+                }
+                if (howManyMethod(line)) {
+                    continue;
+                }
+                if (howMuchMethod(line)) {
+                    continue;
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }
